@@ -1,5 +1,7 @@
 import java.io.*;
-import jakarta.servlet.*;             // Tomcat 10
+import java.security.SecureRandom;
+import java.util.Base64;
+import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 
@@ -44,5 +46,20 @@ public class Helper {
 
 		body = stringBuilder.toString();
 		return body;
+	}
+
+
+	public String generateNewToken() {
+		SecureRandom secureRandom = new SecureRandom(); //threadsafe
+		Base64.Encoder base64Encoder = Base64.getUrlEncoder(); //threadsafe
+		byte[] randomBytes = new byte[24];
+		secureRandom.nextBytes(randomBytes);
+		return base64Encoder.encodeToString(randomBytes);
+	}
+
+	public boolean comparePassword(String pwA, String pwB) {
+		System.out.println(pwA);
+		System.out.println(pwB);
+		return pwA.equals(pwB);
 	}
 }
