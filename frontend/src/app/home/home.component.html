@@ -1,0 +1,22 @@
+<!--<app-navbar [user]="user$ | async"></app-navbar>-->
+<h2>Yet Another ANGULAR e-Bookshop</h2>
+<form>
+  Choose an author:
+  <select [formControl]="authorForm">
+    <option [value]="'all'">all</option>
+    <option *ngFor="let author of authors" [value]="author.value">
+      {{author.display}}
+    </option>
+  </select>
+  <br /><br />
+</form>
+
+<div *ngIf="books.length">
+  <div *ngFor="let book of books" fxLayout="row" fxLayoutGap="10px">
+    <div>{{book.id}}</div>
+    <div>{{book.author}}</div>
+    <div>{{book.title}}</div>
+    <div>{{book.price}}</div>
+    <div>{{book.qty}}</div>
+  </div>
+</div>
