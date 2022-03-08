@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS user (
     uid INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) NOT NULL,
     email VARCHAR(100) NOT NULL,
-    password BINARY(60) NOT NULL
+    password VARCHAR(20) NOT NULL
 );
 
 SHOW tables;
