@@ -44,6 +44,7 @@ export class SignupModalComponent {
       username: this.signupForm.get('username')?.value.trim(),
       email: this.signupForm.get('email')?.value.trim(),
       password: this.signupForm.get('password')?.value.trim(),
+      token: ''
     }
     // await this.authService.signUp(user);
     const errResponse = await this.authService.signUp(user);

@@ -2,7 +2,8 @@ export interface User {
   uid?: number,
   username: string,
   email: string,
-  password: string
+  password: string,
+  token: string;
 }
 
 export interface Game {

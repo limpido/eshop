@@ -4,6 +4,7 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import com.google.gson.*;
+// import javax.servlet.http.Cookie;
 
 @WebServlet("/user/login")
 public class LoginServlet extends HttpServlet {
@@ -27,9 +28,6 @@ public class LoginServlet extends HttpServlet {
 
             JsonObject obj = new Gson().fromJson(reqBody, JsonObject.class);
             System.out.println(obj);
-            // JsonObject userObj = obj.get("user").getAsJsonObject();
-            // System.out.println(userObj);
-            // String username = userObj.get("username").toString();
             String email = obj.get("email").toString();
             String password = obj.get("password").toString();
 
@@ -40,12 +38,20 @@ public class LoginServlet extends HttpServlet {
             } else {
                 User user = db.getUserByEmail(email);
                 System.out.println(user.getPassword());
-                if (helper.comparePassword("\""+user.getPassword()+"\"", password)) {
-                    String token = helper.generateNewToken();                    
+                if (helper.compareString("\""+user.getPassword()+"\"", password)) {
+                    String token = helper.generateNewToken();
+                    System.out.println("token");
+                    System.out.println(token);
+                    db.updateUserToken(user, token);
+                    obj.addProperty("token", token);
+
                     JsonObject resObj = new JsonObject();
-                    resObj.addProperty("token", token);
+                    // res.addCookie(new Cookie("authToken", token));
+                    // helper.addHeaderCookie(res, "authToken", token);
+                    // resObj.addProperty("token", token);
                     resObj.add("user", obj);
                     System.out.println(resObj);
+
                     out.print(resObj);
                     out.close();                      
                     res.setStatus(HttpServletResponse.SC_OK);

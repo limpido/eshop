@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpErrorResponse} from "@angular/common/http";
+import {HttpClient, HttpErrorResponse, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {BehaviorSubject, Observable} from "rxjs";
 import {User} from "../../models";
+import {CookieService} from "ngx-cookie-service";
 
 interface AuthResponse {
   token: string;
   user: User;
+  headers: HttpHeaders;
 }
 
 @Injectable({
@@ -14,7 +16,8 @@ interface AuthResponse {
 export class AuthService {
 
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private cookieService: CookieService
   ) { }
 
   tokenKey = 'authToken';
@@ -23,8 +26,9 @@ export class AuthService {
   initUser() {
     const token = this.getToken();
     if (token) {
-      const url = `http://localhost:9999/test/verify`;
+      const url = `http://localhost:9999/test/auth`;
       this.http.post<User>(url, {token}).subscribe(res => {
+        console.log(res);
         this.setUser(res);
       });
     } else {
@@ -41,7 +45,7 @@ export class AuthService {
     const url = `http://localhost:9999/test/user/login`;
     return await this.http.post<AuthResponse>(url, {email, password}).toPromise().then((res) => {
       this.setUser(res.user);
-      this.saveToken(res.token);
+      this.saveToken(res.user.token);
       return null;
     }).catch((err: HttpErrorResponse) => {
       console.log(err);
@@ -53,7 +57,7 @@ export class AuthService {
     const url = `http://localhost:9999/test/user/signup`;
     return await this.http.post<AuthResponse>(url, {user}).toPromise().then((res) => {
       this.setUser(res.user);
-      this.saveToken(res.token);
+      this.saveToken(res.user.token);
       return null;
     }).catch((err: HttpErrorResponse) => {
       console.log(err);

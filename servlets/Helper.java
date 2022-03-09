@@ -7,11 +7,15 @@ import jakarta.servlet.annotation.*;
 
 public class Helper {
 	public void addHeader(HttpServletResponse response) {
-		response.setHeader("Access-Control-Allow-Origin", "*");
+		response.setHeader("Access-Control-Allow-Origin", "http://localhost:4200");
 		response.setHeader("Access-Control-Allow-Credentials", "true");
 		response.setHeader("Access-Control-Allow-Methods", "GET, POST, PATCH, PUT, DELETE, OPTIONS");
 		response.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 		response.setHeader("Access-Control-Max-Age", "3600");
+	}
+
+	public void addHeaderCookie(HttpServletResponse response, String cookieName, String cookieValue) {
+		response.setHeader("Set-Cookie", cookieName+"="+cookieValue);
 	}
 
 	public String getBody(HttpServletRequest request) throws IOException {
@@ -57,9 +61,9 @@ public class Helper {
 		return base64Encoder.encodeToString(randomBytes);
 	}
 
-	public boolean comparePassword(String pwA, String pwB) {
-		System.out.println(pwA);
-		System.out.println(pwB);
-		return pwA.equals(pwB);
+	public boolean compareString(String a, String b) {
+		System.out.println(a);
+		System.out.println(b);
+		return a.equals(b);
 	}
 }

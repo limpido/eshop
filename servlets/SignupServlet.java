@@ -4,6 +4,7 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import com.google.gson.*;
+// import javax.servlet.http.Cookie;
 // import com.okta.createverifytokens;
 
 @WebServlet("/user/signup")
@@ -32,22 +33,26 @@ public class SignupServlet extends HttpServlet {
             String username = userObj.get("username").toString();
             String email = userObj.get("email").toString();
             String password = userObj.get("password").toString();
-            User user = new User(username, password, email);
 
             if (db.userExists(email)) {
                 res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 out.close();
                 return;
             } else {
-                db.addUser(user);
-                // String token = jwt.createJWT(user, -1);
                 String token = helper.generateNewToken();
                 System.out.println(token);
+                User user = new User(username, password, email, token);
+                db.addUser(user);
 
+                userObj.addProperty("token", token);
                 JsonObject resObj = new JsonObject();
-                resObj.addProperty("token", token);
+                // resObj.addProperty("token", token);
                 resObj.add("user", userObj);
                 System.out.println(resObj);
+
+                Cookie cookie = new Cookie("authToken", token);
+                res.addCookie(cookie);
+                // helper.addHeaderCookie(res, "authToken", token);
 
                 out.print(resObj);
                 out.close();                      

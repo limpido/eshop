@@ -2,11 +2,13 @@ public class User {
 	private String username;
 	private String password;
 	private String email;
+    private String token;
 
-	public User(String username, String password, String email) {
+	public User(String username, String password, String email, String token) {
         this.username = username;
         this.password = password;
         this.email = email;
+        this.token = token;
     }
 
 
@@ -20,5 +22,9 @@ public class User {
 
     public String getEmail() {
     	return email;
+    }
+
+    public String getToken() {
+        return token;
     }
 }

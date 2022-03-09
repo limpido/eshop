@@ -14,11 +14,11 @@ public class DbConnection {
 
 	public Connection connect() throws SQLException {
 		try {
-		this.conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/gamelib?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC",
-                "myuser", "xxxx");
-		this.stmt = conn.createStatement();
-		return this.conn;
+			this.conn = DriverManager.getConnection(
+				"jdbc:mysql://localhost:3306/gamelib?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC",
+				"myuser", "xxxx");
+			this.stmt = conn.createStatement();
+			return this.conn;
 		} catch (Exception e) {
 			System.out.println(e);
 		}
@@ -32,8 +32,23 @@ public class DbConnection {
 		String username = rset.getString("username");
 		// String email = rset.getString("email");
 		String password = rset.getString("password");
-		User user = new User(username, password, email);
+		String token = rset.getString("token");
+		User user = new User(username, password, email, token);
 		return user;
+	}
+
+	public User getUserByToken(String token) throws SQLException {
+		String query = "SELECT * FROM user WHERE token="+token+";";
+		System.out.println(query);
+		ResultSet rset = this.stmt.executeQuery(query);
+		rset.next();
+		if (rset.getString("username") != null) {
+			String username = rset.getString("username");
+			String email = rset.getString("email");
+			String password = rset.getString("password");
+			User user = new User(username, password, email, token);
+			return user;
+		} else return null;
 	}
 
 	public boolean userExists(String email) throws SQLException {
@@ -48,16 +63,52 @@ public class DbConnection {
 
 	public void addUser(User user) throws SQLException {
 		try {
-		System.out.println("addUser");
-		Map<String, String> values = new HashMap<>();
-		values.put("username", user.getUsername());
-		values.put("password", user.getPassword());
-		values.put("email", user.getEmail());
-		StringSubstitutor sub = new StringSubstitutor(values);
-		String query = sub.replace("INSERT INTO user (username, email, password) VALUES (${username}, ${email}, ${password});");
-		this.stmt.executeUpdate(query);			
+			Map<String, String> values = new HashMap<>();
+			values.put("username", user.getUsername());
+			values.put("password", user.getPassword());
+			values.put("email", user.getEmail());
+			values.put("token", user.getToken());
+			StringSubstitutor sub = new StringSubstitutor(values);
+			String query = sub.replace("INSERT INTO user (username, email, password, token) VALUES (${username}, ${email}, ${password}, \"${token}\");");
+			System.out.println(query);
+			this.stmt.executeUpdate(query);
 		} catch(Exception e) {
 			System.out.println(e.getMessage());
 		}
+	}
+
+	public void updateUserToken(User user, String token) throws SQLException {
+		try {
+			Map<String, String> values = new HashMap<>();
+			values.put("email", user.getEmail());
+			values.put("token", token);
+			StringSubstitutor sub = new StringSubstitutor(values);
+			String query = sub.replace("UPDATE user SET token=\"${token}\" WHERE email=${email}");
+			System.out.println(query);
+			this.stmt.executeUpdate(query);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+
+	}
+
+	public JsonArray getGames() throws SQLException {
+		try {
+			String query = "SELECT * FROM game;";
+			ResultSet rset = this.stmt.executeQuery(query);
+			JsonArray games = new JsonArray();
+			while (rset.next()) {
+				JsonObject gameobj = new JsonObject();
+				gameobj.addProperty("title", rset.getString("title"));
+				gameobj.addProperty("developer", rset.getString("developer"));
+				gameobj.addProperty("price", rset.getDouble("price"));
+				gameobj.addProperty("qtySold", rset.getInt("qtySold"));
+				games.add(gameobj);
+			}
+			return games;
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+		return null;
 	}
 }
