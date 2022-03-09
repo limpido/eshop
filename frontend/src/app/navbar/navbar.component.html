@@ -1,10 +1,10 @@
 <div class="nav-bar-container">
   <div *ngIf="!user" class="auth-actions" fxLayout="row" fxLayoutAlign="center center">
-    <button mat-button color="primary" (click)="signUp()">Sign up</button>
-    <button mat-button color="primary" (click)="logIn()">Log in</button>
+    <button mat-flat-button color="primary" (click)="signUp()">Sign up</button>
+    <button mat-flat-button color="primary" (click)="logIn()">Log in</button>
   </div>
   <div *ngIf="user" fxLayout="row" fxLayoutAlign="center center">
-    <button mat-button color="primary">Shopping cart</button>
-    <button mat-button color="primary" (click)="logOut()">Log out</button>
+    <button mat-flat-button color="primary">Shopping cart</button>
+    <button mat-flat-button color="primary" (click)="logOut()">Log out</button>
   </div>
 </div>

@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {FormControl} from "@angular/forms";
 import {Observable, Subscription} from "rxjs";
-import {User} from "../../models";
+import {Game, User} from "../../models";
 import {AuthService} from "../services/auth.service";
+import {GameService} from "../services/game.service";
 
 @Component({
   selector: 'app-home',
@@ -14,10 +15,12 @@ export class HomeComponent implements OnInit {
 
   constructor(
     private http: HttpClient,
-    private authService: AuthService
+    private authService: AuthService,
+    private gameService: GameService
   ) { }
 
   user$: Observable<User | null> = this.authService.getUser();
+  games: Array<Game> = [];
   // authors: Array<AuthorName> = [
   //   {value: 'Tan Ah Teck', display: 'Ah Teck'},
   //   {value: 'Mohammad Ali', display: 'Ali'},
@@ -53,4 +56,5 @@ export class HomeComponent implements OnInit {
   //     this.books = res;
   //   })
   // }
+
 }
