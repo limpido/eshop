@@ -8,5 +8,11 @@
     <div class="title">{{game.title}}</div>
     <div class="price">${{game.price}}</div>
     <div class="qty-sold">{{game.qtySold}} sold</div>
+    <button mat-raised-button color="primary" (click)="addToShoppingCart()" *ngIf="!isAdded">Add&nbsp;
+      <mat-icon>add_shopping_cart</mat-icon>
+    </button>
+    <button mat-raised-button color="primary" [disabled]="isAdded" *ngIf="isAdded">In cart&nbsp;
+      <mat-icon>check</mat-icon>
+    </button>
   </div>
 </mat-card>

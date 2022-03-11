@@ -4,7 +4,15 @@
     <button mat-flat-button color="primary" (click)="logIn()">Log in</button>
   </div>
   <div *ngIf="user" fxLayout="row" fxLayoutAlign="center center">
-    <button mat-flat-button color="primary">Shopping cart</button>
     <button mat-flat-button color="primary" (click)="logOut()">Log out</button>
   </div>
+  <button *ngIf="showShoppingCartBtn" class="shopping-cart-btn" mat-flat-button color="primary" (click)="onClickShoppingCart()">
+    Shopping cart&nbsp;
+    <mat-icon>shopping_cart</mat-icon>
+  </button>
+
+  <button *ngIf="!showShoppingCartBtn" class="home-btn" mat-flat-button color="primary" (click)="onClickHome()">
+    Home&nbsp;
+    <mat-icon>home</mat-icon>
+  </button>
 </div>

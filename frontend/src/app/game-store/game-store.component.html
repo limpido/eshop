@@ -1,5 +1,5 @@
 <div class="game-store" fxLayout="row wrap" fxLayoutAlign="center center">
   <div class="game-card-container" *ngFor="let game of games">
-    <app-game-card [game]="game"></app-game-card>
+    <app-game-card [game]="game" (addGameEvent)="addGame($event)"></app-game-card>
   </div>
 </div>

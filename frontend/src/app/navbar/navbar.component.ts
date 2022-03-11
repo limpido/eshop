@@ -20,6 +20,7 @@ export class NavbarComponent implements OnInit {
   ) { }
 
   @Input() user: User | null;
+  @Input() showShoppingCartBtn: boolean;
 
   ngOnInit(): void {
   }
@@ -38,12 +39,21 @@ export class NavbarComponent implements OnInit {
       width: '400px'
     });
     loginModal.afterClosed().subscribe(async () => {
-      await this.router.navigate(['']);
+      // await this.router.navigate(['']);
+      location.reload();
     });
   }
 
   logOut() {
     this.authService.logOut();
+  }
+
+  async onClickShoppingCart(): Promise<void> {
+    await this.router.navigate(['shopping-cart']);
+  }
+
+  async onClickHome(): Promise<void> {
+    await this.router.navigate(['']);
   }
 
 }

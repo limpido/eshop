@@ -21,6 +21,8 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
 import { GameStoreComponent } from './game-store/game-store.component';
 import { GameCardComponent } from './game-card/game-card.component';
 import {MatCardModule} from '@angular/material/card';
+import { ShoppingCartComponent } from './shopping-cart/shopping-cart.component';
+import {MatDividerModule} from '@angular/material/divider';
 
 @NgModule({
   declarations: [
@@ -30,7 +32,8 @@ import {MatCardModule} from '@angular/material/card';
     SignupModalComponent,
     LoginModalComponent,
     GameStoreComponent,
-    GameCardComponent
+    GameCardComponent,
+    ShoppingCartComponent,
   ],
   imports: [
     BrowserModule,
@@ -47,7 +50,8 @@ import {MatCardModule} from '@angular/material/card';
     MatInputModule,
     MatButtonModule,
     MatSnackBarModule,
-    MatCardModule
+    MatCardModule,
+    MatDividerModule
   ],
   providers: [],
   bootstrap: [AppComponent]

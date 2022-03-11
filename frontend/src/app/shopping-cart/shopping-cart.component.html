@@ -1,0 +1,44 @@
+<app-navbar [user]="user$ | async"
+            [showShoppingCartBtn]="false"></app-navbar>
+<div class="shopping-cart-container" fxLayout="column" fxLayoutGap="36px" *ngIf="isReady">
+  <div class="page-title">Shopping Cart</div>
+  <div *ngIf="!games.length">
+    Your Shopping Cart is Empty
+  </div>
+  <div *ngIf="games.length > 0" fxLayout="column" fxLayoutGap="20px">
+    <div *ngFor="let game of games" fxLayout="column" fxLayoutGap="20px">
+      <div fxLayout="row" fxLayoutAlign="space-between center">
+        <div fxLayout="row" fxLayoutGap="30px">
+          <div class="img-wrapper">
+            <img class="game-img" src="assets/img/hollow%20knight.jpg">
+          </div>
+          <div fxLayout="column" fxLayoutGap="18px">
+            <div class="title">{{game.title}}</div>
+            <div class="developer">{{game.developer}}</div>
+            <div class="price">${{game.price | number: '1.2-2'}}</div>
+          </div>
+        </div>
+
+        <div *ngIf="game.qtyOrdered" fxLayout="row" fxLayoutGap="24px" fxLayoutAlign="start center">
+          <div>
+            <button mat-icon-button color="primary" (click)="decreaseQtyOrdered(game)"><mat-icon>chevron_left</mat-icon></button>
+            <span>{{game.qtyOrdered}}</span>
+            <button mat-icon-button color="primary" (click)="increaseQtyOrdered(game)"><mat-icon>chevron_right</mat-icon></button>
+          </div>
+          <div>
+            <span>${{game.total | number: '1.2-2'}}</span>
+          </div>
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+    </div>
+  </div>
+
+  <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="36px">
+    <div>
+      <span>Total: </span>
+      <span>${{total | number: '1.2-2'}}</span>
+    </div>
+    <button mat-raised-button color="primary" (click)="checkOut()">Check out</button>
+  </div>
+</div>
