@@ -7,10 +7,12 @@ export interface User {
 }
 
 export interface Game {
-  gameId?: number,
+  gameId: number,
   title: string,
   developer: string,
   price: number,
-  qtySold: number
+  qtySold: number,
+  qtyOrdered?: number,
+  total?: number
 }
 
