@@ -4,6 +4,13 @@ import {Game, User} from "../../models";
 import {Observable} from "rxjs";
 import {AuthService} from "../services/auth.service";
 import {CookieService} from "ngx-cookie-service";
+import {FormControl} from "@angular/forms";
+
+// export interface searchParams {
+//   price?: string,
+//   title?: string,
+//   genre?: string
+// }
 
 @Component({
   selector: 'app-game-store',
@@ -20,19 +27,49 @@ export class GameStoreComponent implements OnInit {
 
   user$: Observable<User | null> = this.authService.getUser();
   user: User | null;
+  allGames: Array<Game> = [];
   games: Array<Game> = [];
   cartItems: Array<Game> = [];
+  priceFc: FormControl = new FormControl('all');
+  titleFc: FormControl = new FormControl('');
+  searchParams: any = {};
 
   async ngOnInit(): Promise<void> {
     this.user$.subscribe(res => {
       this.user =  res;
     });
     await Promise.all([
-      this.games = await this.gameService.getAllGames(),
+      this.allGames = await this.gameService.getAllGames(),
       this.user?.uid ? this.cartItems = await this.gameService.getShoppingCartItems(this.user.uid) : null
     ]);
-
+    this.games = [...this.allGames];
     console.log(this.cartItems);
+    this.priceFc.valueChanges.subscribe(async (value) => {
+      if (value === 'all') {
+        this.games = [...this.allGames];
+      } else {
+        console.log(value);
+        this.searchParams['price'] = value;
+        // const searchParams = new URLSearchParams(this.searchParams);
+        this.games = await this.gameService.gameQuery(new URLSearchParams(this.searchParams));
+      }
+    });
+  }
+
+  async searchTitle() {
+    if (this.titleFc.value === '') {
+      delete this.searchParams['title'];
+      console.log(this.searchParams);
+      console.log(Object.keys(this.searchParams).length);
+      if (!Object.keys(this.searchParams).length) {
+        this.games = [...this.allGames];
+      } else {
+        this.games = await this.gameService.gameQuery(new URLSearchParams(this.searchParams));
+      }
+    } else {
+      this.searchParams['title'] = this.titleFc.value.replace("'", "''");
+      this.games = await this.gameService.gameQuery(new URLSearchParams(this.searchParams));
+    }
   }
 
   async addGame(game: Game): Promise<void> {

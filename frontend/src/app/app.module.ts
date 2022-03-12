@@ -23,6 +23,7 @@ import { GameCardComponent } from './game-card/game-card.component';
 import {MatCardModule} from '@angular/material/card';
 import { ShoppingCartComponent } from './shopping-cart/shopping-cart.component';
 import {MatDividerModule} from '@angular/material/divider';
+import {MatSelectModule} from '@angular/material/select';
 
 @NgModule({
   declarations: [
@@ -51,7 +52,8 @@ import {MatDividerModule} from '@angular/material/divider';
     MatButtonModule,
     MatSnackBarModule,
     MatCardModule,
-    MatDividerModule
+    MatDividerModule,
+    MatSelectModule
   ],
   providers: [],
   bootstrap: [AppComponent]

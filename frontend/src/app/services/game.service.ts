@@ -36,4 +36,15 @@ export class GameService {
       return res;
     });
   }
+
+  async gameQuery(searchParams: URLSearchParams) {
+    // const searchParams = new URLSearchParams(param)
+    console.log(searchParams);
+    const url = `http://localhost:9999/test/game?`.concat(searchParams.toString());
+    console.log(url);
+    return await this.http.get<Array<Game>>(url).toPromise().then(res => {
+      console.log(res);
+      return res;
+    })
+  }
 }
