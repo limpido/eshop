@@ -4,16 +4,14 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import com.google.gson.*;
-// import javax.servlet.http.Cookie;
 
-@WebServlet("/auth")
-public class AuthServlet extends HttpServlet {
+@WebServlet("/game/genres")
+public class GameGenreServlet extends HttpServlet {
     @Override
-    public void doPost(HttpServletRequest req, HttpServletResponse res)
+    public void doGet(HttpServletRequest req, HttpServletResponse res)
     throws ServletException, IOException {
-        Helper helper = new Helper();
         DbConnection db = new DbConnection();
-
+        Helper helper = new Helper();
         try (
             Connection conn = db.connect();         
             ) {
@@ -21,18 +19,7 @@ public class AuthServlet extends HttpServlet {
             res.setContentType("application/json");
             res.setCharacterEncoding("UTF-8");
             PrintWriter out = res.getWriter();
-
-            String reqBody = helper.getBody(req);
-            JsonObject obj = new Gson().fromJson(reqBody, JsonObject.class);
-            String token = obj.get("token").getAsString();
-            System.out.println(token);
-
-            JsonObject userobj = db.getUserByToken(token);
-            if (userobj != null) {
-                userobj.addProperty("token", token);
-                System.out.println(userobj);
-                out.print(userobj);
-            }
+            out.print(db.getGenres());
             out.close();
             res.setStatus(HttpServletResponse.SC_OK);
         }catch(Exception ex) {

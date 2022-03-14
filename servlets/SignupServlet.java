@@ -50,8 +50,8 @@ public class SignupServlet extends HttpServlet {
                 resObj.add("user", userObj);
                 System.out.println(resObj);
 
-                Cookie cookie = new Cookie("authToken", token);
-                res.addCookie(cookie);
+                // Cookie cookie = new Cookie("authToken", token);
+                // res.addCookie(cookie);
                 // helper.addHeaderCookie(res, "authToken", token);
 
                 out.print(resObj);

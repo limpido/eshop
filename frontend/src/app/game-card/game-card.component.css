@@ -30,11 +30,20 @@
   height: 200px;
 }
 
-.title {
-  font-size: 18px;
-  font-weight: 500;
+/*.title {*/
+/*  font-size: 18px;*/
+/*}*/
+
+.developer, .genre {
+  color: #787878;
 }
 
-.developer {
-  color: #787878;
+.genre {
+  text-transform: capitalize;
+}
+
+.title, .price {
+  font-size: 18px;
+  color: #673ab7 !important;
+  font-weight: 600;
 }

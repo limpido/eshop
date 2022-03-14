@@ -21,11 +21,17 @@
   height: 140px;
 }
 
-.title {
-  font-weight: 500;
-  font-size: 18px;
-}
+/*.title {*/
+/*  font-weight: 500;*/
+/*  font-size: 18px;*/
+/*}*/
 
 .developer {
   color: #787878;
+}
+
+.total-price, .title {
+  color: #673ab7;
+  font-size: 18px;
+  font-weight: 600;
 }

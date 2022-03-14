@@ -12,7 +12,7 @@ export class GameService {
   ) { }
 
   async getAllGames() {
-    const url = `http://localhost:9999/test/game/all`
+    const url = `http://localhost:9999/test/game/all`;
     return await this.http.get<Array<Game>>(url).toPromise().then((res) => {
       console.log(res);
       return res;
@@ -44,6 +44,13 @@ export class GameService {
     console.log(url);
     return await this.http.get<Array<Game>>(url).toPromise().then(res => {
       console.log(res);
+      return res;
+    })
+  }
+
+  getAllGenres() {
+    const url = `http://localhost:9999/test/game/genres`;
+    return this.http.get<Array<string>>(url).toPromise().then(res => {
       return res;
     })
   }

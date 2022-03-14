@@ -81,20 +81,20 @@ public class GameQueryServlet extends HttpServlet {
             ResultSet rset = stmt.executeQuery(sqlStr);
             JsonArray arr = new JsonArray();
             while(rset.next()) {
-              JsonObject inner = new JsonObject();
-              inner.addProperty("gameId", rset.getString("gameId"));
-              inner.addProperty("title", rset.getString("title"));
-                 // inner.addProperty("genre", rset.getDouble("genre"));
-              inner.addProperty("developer", rset.getString("developer"));
-              inner.addProperty("price", rset.getDouble("price"));
-              inner.addProperty("qtySold", rset.getString("qtySold"));
-                 // inner.addProperty("image_path", rset.getString("image_path"));
-              arr.add(inner);
-           }
-           out.print(arr);
-           response.setStatus(HttpServletResponse.SC_OK);
-        }
-     } catch(Exception ex) {
+             JsonObject inner = new JsonObject();
+             inner.addProperty("gameId", rset.getString("gameId"));
+             inner.addProperty("title", rset.getString("title"));
+             inner.addProperty("genre", rset.getString("genre"));
+             inner.addProperty("developer", rset.getString("developer"));
+             inner.addProperty("price", rset.getDouble("price"));
+             inner.addProperty("qtySold", rset.getString("qtySold"));
+             inner.addProperty("image_path", rset.getString("image_path"));
+             arr.add(inner);
+          }
+          out.print(arr);
+          response.setStatus(HttpServletResponse.SC_OK);
+       }
+    } catch(Exception ex) {
       ex.printStackTrace();
       System.out.println(ex.getMessage());
    }

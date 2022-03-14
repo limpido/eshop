@@ -10,7 +10,7 @@
       <div fxLayout="row" fxLayoutAlign="space-between center">
         <div fxLayout="row" fxLayoutGap="30px">
           <div class="img-wrapper">
-            <img class="game-img" src="assets/img/hollow%20knight.jpg">
+            <img class="game-img" src="{{game.image_path}}">
           </div>
           <div fxLayout="column" fxLayoutGap="18px">
             <div class="title">{{game.title}}</div>
@@ -37,7 +37,7 @@
   <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="36px">
     <div>
       <span>Total: </span>
-      <span>${{total | number: '1.2-2'}}</span>
+      <span class="total-price">${{total | number: '1.2-2'}}</span>
     </div>
     <button mat-raised-button color="primary" (click)="checkOut()">Check out</button>
   </div>

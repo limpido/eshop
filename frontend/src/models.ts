@@ -9,6 +9,8 @@ export interface User {
 export interface Game {
   gameId: number,
   title: string,
+  image_path: string,
+  genre: string,
   developer: string,
   price: number,
   qtySold: number,

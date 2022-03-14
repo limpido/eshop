@@ -30,24 +30,28 @@ public class DbConnection {
 		ResultSet rset = this.stmt.executeQuery(query);
 		rset.next();
 		String username = rset.getString("username");
-		// String email = rset.getString("email");
 		String password = rset.getString("password");
 		String token = rset.getString("token");
+		System.out.println("rset.getString(\"token\")");
+		System.out.println(token);
 		User user = new User(username, password, email, token);
 		return user;
 	}
 
-	public User getUserByToken(String token) throws SQLException {
-		String query = "SELECT * FROM user WHERE token="+token+";";
+	public JsonObject getUserByToken(String token) throws SQLException {
+		String query = "SELECT * FROM user WHERE token=\""+token+"\";";
 		System.out.println(query);
 		ResultSet rset = this.stmt.executeQuery(query);
 		rset.next();
+		JsonObject userobj = new JsonObject();
 		if (rset.getString("username") != null) {
 			String username = rset.getString("username");
 			String email = rset.getString("email");
 			String password = rset.getString("password");
-			User user = new User(username, password, email, token);
-			return user;
+			userobj.addProperty("username", rset.getString("username"));
+			userobj.addProperty("email", rset.getString("email"));
+			userobj.addProperty("uid", rset.getInt("uid"));
+			return userobj;
 		} else return null;
 	}
 
@@ -99,13 +103,105 @@ public class DbConnection {
 			JsonArray games = new JsonArray();
 			while (rset.next()) {
 				JsonObject gameobj = new JsonObject();
+				gameobj.addProperty("gameId", rset.getInt("gameId"));
 				gameobj.addProperty("title", rset.getString("title"));
 				gameobj.addProperty("developer", rset.getString("developer"));
 				gameobj.addProperty("price", rset.getDouble("price"));
 				gameobj.addProperty("qtySold", rset.getInt("qtySold"));
+				gameobj.addProperty("image_path", rset.getString("image_path"));
+				gameobj.addProperty("genre", rset.getString("genre"));
 				games.add(gameobj);
 			}
 			return games;
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+		return null;
+	}
+
+	public JsonArray getCartItemsByUid(int uid) throws SQLException {
+		try {
+			// int uidInt = Integer.parseInt(uid);
+			Map<String, String> values = new HashMap<>();
+			values.put("uid", Integer.toString(uid));
+			StringSubstitutor sub = new StringSubstitutor(values);
+			String query = sub.replace("SELECT * FROM cart WHERE uid=${uid};");
+			System.out.println(query);
+			ResultSet rset = this.stmt.executeQuery(query);
+
+			HashMap<Integer, Integer> games = new HashMap<Integer, Integer>();
+			while (rset.next()) {
+				games.put(rset.getInt("gameId"), rset.getInt("qtyOrdered"));
+			}
+			System.out.println(games);
+
+			JsonArray items = new JsonArray();
+			for (int gameId: games.keySet()) {
+				JsonObject gameObj = getGameByGameId(gameId);
+				System.out.println(gameObj);
+				System.out.println(gameObj.get("price").getAsFloat());
+				int qtyOrdered = games.get(gameId);
+				float price = gameObj.get("price").getAsFloat();
+				float total = price * qtyOrdered;
+				gameObj.addProperty("qtyOrdered", qtyOrdered);
+				gameObj.addProperty("total", total);
+				items.add(gameObj);
+			}
+			return items;
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+		return null;
+	}
+
+	public JsonObject getGameByGameId(int gameId) throws SQLException {
+		try {
+			Map<String, String> values = new HashMap<>();
+			values.put("gameId", Integer.toString(gameId));
+			StringSubstitutor sub = new StringSubstitutor(values);
+			String query = sub.replace("SELECT * FROM game WHERE gameId=${gameId};");
+						System.out.println(query);
+			ResultSet rset = this.stmt.executeQuery(query);
+			rset.next();
+			JsonObject gameobj = new JsonObject();
+			gameobj.addProperty("gameId", rset.getInt("gameId"));
+			gameobj.addProperty("title", rset.getString("title"));
+			gameobj.addProperty("developer", rset.getString("developer"));
+			gameobj.addProperty("price", rset.getDouble("price"));
+			return gameobj;
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+		return null;
+	}
+
+	public void updateCartItem(int uid, int gameId, int qtyOrdered) {
+		try {
+			Map<String, String> values = new HashMap<>();
+			values.put("gameId", Integer.toString(gameId));
+			values.put("uid", Integer.toString(uid));
+			values.put("qtyOrdered", Integer.toString(qtyOrdered));
+			StringSubstitutor sub = new StringSubstitutor(values);
+			String query = sub.replace("INSERT INTO cart (uid, gameId, qtyOrdered) VALUES(${uid}, ${gameId}, ${qtyOrdered}) ON DUPLICATE KEY UPDATE qtyOrdered=${qtyOrdered}");
+			System.out.println(query);
+			this.stmt.executeUpdate(query);
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+	}
+
+	public JsonArray getGenres() {
+		try {
+			String query = "SELECT DISTINCT genre FROM game;";
+			System.out.println(query);
+			ResultSet rset = this.stmt.executeQuery(query);
+
+			JsonArray genres = new JsonArray();
+			while (rset.next()) {
+				genres.add(rset.getString("genre"));
+			}
+			System.out.println(genres);
+			return genres;
 		} catch(Exception e) {
 			System.out.println(e.getMessage());
 		}

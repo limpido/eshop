@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {GameService} from "../services/game.service";
 import {Game, User} from "../../models";
-import {Observable} from "rxjs";
+import {Observable, Subscription} from "rxjs";
 import {AuthService} from "../services/auth.service";
 import {CookieService} from "ngx-cookie-service";
 import {FormControl} from "@angular/forms";
@@ -17,7 +17,7 @@ import {FormControl} from "@angular/forms";
   templateUrl: './game-store.component.html',
   styleUrls: ['./game-store.component.css']
 })
-export class GameStoreComponent implements OnInit {
+export class GameStoreComponent implements OnInit, OnDestroy {
 
   constructor(
     private authService: AuthService,
@@ -32,25 +32,41 @@ export class GameStoreComponent implements OnInit {
   cartItems: Array<Game> = [];
   priceFc: FormControl = new FormControl('all');
   titleFc: FormControl = new FormControl('');
+  genreFc: FormControl = new FormControl('all');
   searchParams: any = {};
+  genres: Array<String> = [];
+  sub1: Subscription;
+  sub2: Subscription;
 
   async ngOnInit(): Promise<void> {
     this.user$.subscribe(res => {
       this.user =  res;
     });
     await Promise.all([
+      this.genres = await this.gameService.getAllGenres(),
       this.allGames = await this.gameService.getAllGames(),
       this.user?.uid ? this.cartItems = await this.gameService.getShoppingCartItems(this.user.uid) : null
     ]);
     this.games = [...this.allGames];
     console.log(this.cartItems);
-    this.priceFc.valueChanges.subscribe(async (value) => {
+
+    this.sub1 = this.priceFc.valueChanges.subscribe(async (value) => {
       if (value === 'all') {
         this.games = [...this.allGames];
       } else {
         console.log(value);
         this.searchParams['price'] = value;
         // const searchParams = new URLSearchParams(this.searchParams);
+        this.games = await this.gameService.gameQuery(new URLSearchParams(this.searchParams));
+      }
+    });
+
+    this.sub2 = this.genreFc.valueChanges.subscribe(async (value) => {
+      if (value === 'all') {
+        this.games = [...this.allGames];
+      } else {
+        console.log(value);
+        this.searchParams['genre'] = value;
         this.games = await this.gameService.gameQuery(new URLSearchParams(this.searchParams));
       }
     });
@@ -93,6 +109,11 @@ export class GameStoreComponent implements OnInit {
       await this.gameService.updateShoppingCartItem(this.user.uid, game.gameId, qty);
     }
 
+  }
+
+  ngOnDestroy(): void {
+    this.sub1?.unsubscribe();
+    this.sub2?.unsubscribe();
   }
 
 }

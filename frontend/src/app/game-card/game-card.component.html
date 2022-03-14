@@ -1,11 +1,15 @@
 <mat-card class="game-card" *ngIf="!!game">
   <div class="game-content" fxLayout="column" fxLayoutGap="10px">
-<!--    <img mat-card-img src="assets/img/hollow%20knight.jpg">-->
+    <!--    <img mat-card-img src="assets/img/hollow%20knight.jpg">-->
     <div class="img-wrapper">
-      <img class="game-img" src="assets/img/hollow%20knight.jpg">
+      <!--      <img class="game-img" src="assets/img/hollow%20knight.jpg">-->
+      <img class="game-img" src="{{game.image_path}}">
     </div>
-    <div class="developer">{{game.developer}}</div>
-    <div class="title">{{game.title}}</div>
+    <div class="genre">{{game.genre}}</div>
+    <div fxLayout="column" fxLayoutGap="4px">
+      <div class="title">{{game.title}}</div>
+      <div class="developer">{{game.developer}}</div>
+    </div>
     <div class="price">${{game.price}}</div>
     <div class="qty-sold">{{game.qtySold}} sold</div>
     <button mat-raised-button color="primary" (click)="addToShoppingCart()" *ngIf="!isAdded">Add&nbsp;
