@@ -39,8 +39,8 @@ export class NavbarComponent implements OnInit {
       width: '400px'
     });
     loginModal.afterClosed().subscribe(async () => {
-      // await this.router.navigate(['']);
-      location.reload();
+      await this.router.navigate(['']);
+      // location.reload();
     });
   }
 

@@ -30,13 +30,11 @@ export class ShoppingCartComponent implements OnInit {
   ngOnInit(): void {
     const cookieItems = this.cookieService.get("items") ? JSON.parse(this.cookieService.get("items")) : [];
     this.user$.subscribe(async res => {
-      console.log(res);
       this.user =  res;
       if (!this.user) {
         this.games = cookieItems;
-        console.log(this.games);
       } else if (this.user.uid) {
-        let dbItems = await this.gameService.getShoppingCartItems(this.user.uid);
+        let dbItems = await this.gameService.getShoppingCartItems(this.user.uid) ?? [];
         for (let cookieItem of cookieItems) {
           let items = dbItems.filter(item => item.gameId === cookieItem.gameId);
           if (!items.length) {
@@ -75,7 +73,6 @@ export class ShoppingCartComponent implements OnInit {
 
   async onQtyOrderedChange(game: Game) {
     this.calculateTotal();
-    console.log(game.qtyOrdered !== null);
     if (!this.user)
       this.saveItemsToCookie();
     else if (this.user.uid && game.qtyOrdered !== undefined)

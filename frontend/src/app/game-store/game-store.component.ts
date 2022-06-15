@@ -45,16 +45,18 @@ export class GameStoreComponent implements OnInit, OnDestroy {
     await Promise.all([
       this.genres = await this.gameService.getAllGenres(),
       this.allGames = await this.gameService.getAllGames(),
-      this.user?.uid ? this.cartItems = await this.gameService.getShoppingCartItems(this.user.uid) : null
+      this.user?.uid ? this.cartItems = await this.gameService.getShoppingCartItems(this.user.uid) : []
     ]);
+    if (!this.cartItems) this.cartItems = [];
     this.games = [...this.allGames];
-    console.log(this.cartItems);
 
     this.sub1 = this.priceFc.valueChanges.subscribe(async (value) => {
       if (value === 'all') {
-        this.games = [...this.allGames];
+        delete this.searchParams['price'];
+        if (!this.searchParams['genre']?.length)
+          this.games = [...this.allGames];
+        else this.games = await this.gameService.gameQuery(new URLSearchParams(this.searchParams));
       } else {
-        console.log(value);
         this.searchParams['price'] = value;
         // const searchParams = new URLSearchParams(this.searchParams);
         this.games = await this.gameService.gameQuery(new URLSearchParams(this.searchParams));
@@ -63,9 +65,11 @@ export class GameStoreComponent implements OnInit, OnDestroy {
 
     this.sub2 = this.genreFc.valueChanges.subscribe(async (value) => {
       if (value === 'all') {
-        this.games = [...this.allGames];
+        delete this.searchParams['genre'];
+        if (!this.searchParams['price']?.length)
+          this.games = [...this.allGames];
+        else this.games = await this.gameService.gameQuery(new URLSearchParams(this.searchParams));
       } else {
-        console.log(value);
         this.searchParams['genre'] = value;
         this.games = await this.gameService.gameQuery(new URLSearchParams(this.searchParams));
       }
@@ -75,8 +79,6 @@ export class GameStoreComponent implements OnInit, OnDestroy {
   async searchTitle() {
     if (this.titleFc.value === '') {
       delete this.searchParams['title'];
-      console.log(this.searchParams);
-      console.log(Object.keys(this.searchParams).length);
       if (!Object.keys(this.searchParams).length) {
         this.games = [...this.allGames];
       } else {
@@ -96,7 +98,6 @@ export class GameStoreComponent implements OnInit, OnDestroy {
       };
       let items = this.cookieService.get("items") ? JSON.parse(this.cookieService.get("items")) : [];
       items.push(game);
-      console.log(items);
       this.cookieService.set("items", JSON.stringify(items));
     } else if (this.user.uid) {
       let qty: number = 1;

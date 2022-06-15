@@ -28,7 +28,6 @@ export class AuthService {
     if (token) {
       const url = `http://localhost:9999/test/auth`;
       this.http.post<User>(url, {token}).subscribe(res => {
-        console.log(res);
         this.setUser(res);
       });
     } else {
@@ -56,6 +55,7 @@ export class AuthService {
   async signUp(user: User) {
     const url = `http://localhost:9999/test/user/signup`;
     return await this.http.post<AuthResponse>(url, {user}).toPromise().then((res) => {
+      console.log('sign up', res.user);
       this.setUser(res.user);
       this.saveToken(res.user.token);
       return null;

@@ -24,12 +24,9 @@ public class SignupServlet extends HttpServlet {
             PrintWriter out = res.getWriter();
 
             String reqBody = helper.getBody(req);
-            System.out.println(reqBody);
 
             JsonObject obj = new Gson().fromJson(reqBody, JsonObject.class);
-            System.out.println(obj);
             JsonObject userObj = obj.get("user").getAsJsonObject();
-            System.out.println(userObj);
             String username = userObj.get("username").toString();
             String email = userObj.get("email").toString();
             String password = userObj.get("password").toString();
@@ -40,19 +37,13 @@ public class SignupServlet extends HttpServlet {
                 return;
             } else {
                 String token = helper.generateNewToken();
-                System.out.println(token);
                 User user = new User(username, password, email, token);
                 db.addUser(user);
 
-                userObj.addProperty("token", token);
+                JsonObject userWithUid = db.getUserByToken(token);
+                                system.out.println("userWithUid");
                 JsonObject resObj = new JsonObject();
-                // resObj.addProperty("token", token);
-                resObj.add("user", userObj);
-                System.out.println(resObj);
-
-                // Cookie cookie = new Cookie("authToken", token);
-                // res.addCookie(cookie);
-                // helper.addHeaderCookie(res, "authToken", token);
+                resObj.add("user", userWithUid);
 
                 out.print(resObj);
                 out.close();                      
